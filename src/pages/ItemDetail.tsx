@@ -1,34 +1,48 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Tag, Phone, Share2, MessageCircle, Loader2, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { useToast } from '@/hooks/use-toast';
-import { useItem, useUpdateItem } from '@/hooks/useSupabase';
+import { useParams, Link, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  Tag,
+  Phone,
+  Share2,
+  MessageCircle,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { useToast } from "@/hooks/use-toast";
+import { useItem, useUpdateItem } from "@/hooks/useSupabase";
 
 const ItemDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isChangingStatus, setIsChangingStatus] = useState(false);
-  
+
   // Fetch from Supabase database
-  const { data: dbItem, isLoading } = useItem(id || '');
+  const { data: dbItem, isLoading } = useItem(id || "");
   const { mutate: updateItem } = useUpdateItem();
-  
-  const item = dbItem ? {
-    id: dbItem.id,
-    name: dbItem.title,
-    description: dbItem.description,
-    type: dbItem.type,
-    category: dbItem.category || 'Lainnya',
-    location: dbItem.location,
-    date: dbItem.created_at,
-    contact: dbItem.contact_phone,
-    image: dbItem.image_url || 'https://via.placeholder.com/400x300?text=No+Image',
-  } : null;
+
+  const item = dbItem
+    ? {
+        id: dbItem.id,
+        name: dbItem.title,
+        description: dbItem.description,
+        type: dbItem.type,
+        category: dbItem.category || "Lainnya",
+        location: dbItem.location,
+        date: dbItem.created_at,
+        contact: dbItem.contact_phone,
+        image:
+          dbItem.image_url ||
+          "https://via.placeholder.com/400x300?text=No+Image",
+      }
+    : null;
 
   if (isLoading) {
     return (
@@ -68,19 +82,22 @@ const ItemDetail = () => {
   }
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('id-ID', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
   };
 
   const handleContact = () => {
     const message = encodeURIComponent(
-      `Halo, saya tertarik dengan laporan "${item.name}" di Lost&Found. Apakah masih tersedia?`
+      `Halo, saya tertarik dengan laporan "${item.name}" di Lost&Found. Apakah masih tersedia?`,
     );
-    window.open(`https://wa.me/${item.contact.replace(/^0/, '62')}?text=${message}`, '_blank');
+    window.open(
+      `https://wa.me/${item.contact.replace(/^0/, "62")}?text=${message}`,
+      "_blank",
+    );
   };
 
   const handleShare = async () => {
@@ -114,8 +131,8 @@ const ItemDetail = () => {
     }
 
     setIsChangingStatus(true);
-    const newType = item.type === 'lost' ? 'found' : 'lost';
-    
+    const newType = item.type === "lost" ? "found" : "lost";
+
     try {
       await updateItem(
         { id: String(dbItem.id), updates: { type: newType } },
@@ -123,25 +140,27 @@ const ItemDetail = () => {
           onSuccess: () => {
             toast({
               title: "Status diperbarui!",
-              description: `Barang telah diubah menjadi "${newType === 'lost' ? 'Hilang' : 'Ditemukan'}"`,
+              description: `Barang telah diubah menjadi "${newType === "lost" ? "Hilang" : "Ditemukan"}"`,
             });
             setIsChangingStatus(false);
-            navigate(newType === 'lost' ? '/lost' : '/found');
+            navigate(newType === "lost" ? "/lost" : "/found");
           },
           onError: (error) => {
             toast({
               title: "Gagal mengubah status",
-              description: error instanceof Error ? error.message : "Terjadi kesalahan",
+              description:
+                error instanceof Error ? error.message : "Terjadi kesalahan",
               variant: "destructive",
             });
             setIsChangingStatus(false);
           },
-        }
+        },
       );
     } catch (error) {
       toast({
         title: "Gagal mengubah status",
-        description: error instanceof Error ? error.message : "Terjadi kesalahan",
+        description:
+          error instanceof Error ? error.message : "Terjadi kesalahan",
         variant: "destructive",
       });
       setIsChangingStatus(false);
@@ -151,12 +170,12 @@ const ItemDetail = () => {
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar />
-      
+
       <main className="pt-24 pb-16 md:pt-28 md:pb-24">
         <div className="container mx-auto px-4">
           {/* Back Button */}
           <Link
-            to={item.type === 'lost' ? '/lost' : '/found'}
+            to={item.type === "lost" ? "/lost" : "/found"}
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -174,14 +193,14 @@ const ItemDetail = () => {
                 />
                 <div className="absolute top-4 left-4">
                   <Badge
-                    variant={item.type === 'lost' ? 'destructive' : 'default'}
+                    variant={item.type === "lost" ? "destructive" : "default"}
                     className={`${
-                      item.type === 'lost'
-                        ? 'bg-destructive text-destructive-foreground'
-                        : 'bg-primary text-primary-foreground'
+                      item.type === "lost"
+                        ? "bg-destructive text-destructive-foreground"
+                        : "bg-primary text-primary-foreground"
                     } text-sm px-3 py-1`}
                   >
-                    {item.type === 'lost' ? 'Hilang' : 'Ditemukan'}
+                    {item.type === "lost" ? "Hilang" : "Ditemukan"}
                   </Badge>
                 </div>
               </div>
@@ -253,9 +272,9 @@ const ItemDetail = () => {
                     Perbarui Status
                   </h2>
                   <p className="text-muted-foreground mb-4 text-sm">
-                    {item.type === 'lost' 
-                      ? 'Apakah barang ini sudah ditemukan?' 
-                      : 'Apakah barang ini belum diklaim?'}
+                    {item.type === "lost"
+                      ? "Apakah barang ini sudah ditemukan?"
+                      : "Apakah barang ini belum diklaim?"}
                   </p>
                   <Button
                     variant="default"
@@ -271,7 +290,8 @@ const ItemDetail = () => {
                     ) : (
                       <>
                         <CheckCircle2 className="w-5 h-5 mr-2" />
-                        Ubah menjadi {item.type === 'lost' ? 'Ditemukan' : 'Hilang'}
+                        Ubah menjadi{" "}
+                        {item.type === "lost" ? "Ditemukan" : "Hilang"}
                       </>
                     )}
                   </Button>
@@ -284,8 +304,13 @@ const ItemDetail = () => {
                   Tips Keamanan
                 </h3>
                 <ul className="text-sm text-foreground space-y-1">
-                  <li>• Selalu verifikasi identitas pemilik sebelum menyerahkan barang</li>
-                  <li>• Minta bukti kepemilikan seperti foto atau nota pembelian</li>
+                  <li>
+                    • Selalu verifikasi identitas pemilik sebelum menyerahkan
+                    barang
+                  </li>
+                  <li>
+                    • Minta bukti kepemilikan seperti foto atau nota pembelian
+                  </li>
                   <li>• Bertemu di tempat umum yang aman</li>
                 </ul>
               </div>

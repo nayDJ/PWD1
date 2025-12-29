@@ -1,6 +1,6 @@
-import { Search, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { categories, locations } from '@/lib/mockData';
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { categories, locations } from "@/lib/mockData";
 
 interface SearchFilterProps {
   searchTerm: string;

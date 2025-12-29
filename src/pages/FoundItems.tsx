@@ -1,17 +1,17 @@
-import { useState, useMemo } from 'react';
-import { Package, Loader2 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import ItemCard from '../components/ItemCard';
-import SearchFilter from '../components/SearchFilter';
-import { useItems } from '@/hooks/useSupabase';
+import { useState, useMemo } from "react";
+import { Package, Loader2 } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ItemCard from "../components/ItemCard";
+import SearchFilter from "../components/SearchFilter";
+import { useItems } from "@/hooks/useSupabase";
 
 const FoundItems = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
 
-  const { data: dbItems = [], isLoading, error } = useItems('found');
+  const { data: dbItems = [], isLoading, error } = useItems("found");
 
   // Map database items to component format
   const allItems = useMemo(() => {
@@ -21,7 +21,7 @@ const FoundItems = () => {
       title: item.title,
       description: item.description,
       type: item.type,
-      category: item.category || 'Lainnya',
+      category: item.category || "Lainnya",
       location: item.location,
       date: item.created_at,
       contact: item.contact_phone,
@@ -32,26 +32,29 @@ const FoundItems = () => {
 
   const foundItems = useMemo(() => {
     return allItems
-      .filter((item) => item.type === 'found')
+      .filter((item) => item.type === "found")
       .filter((item) => {
-        const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        const matchesSearch =
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = !selectedCategory || item.category === selectedCategory;
-        const matchesLocation = !selectedLocation || item.location === selectedLocation;
+        const matchesCategory =
+          !selectedCategory || item.category === selectedCategory;
+        const matchesLocation =
+          !selectedLocation || item.location === selectedLocation;
         return matchesSearch && matchesCategory && matchesLocation;
       });
   }, [allItems, searchTerm, selectedCategory, selectedLocation]);
 
   const handleClearFilters = () => {
-    setSearchTerm('');
-    setSelectedCategory('');
-    setSelectedLocation('');
+    setSearchTerm("");
+    setSelectedCategory("");
+    setSelectedLocation("");
   };
 
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar />
-      
+
       <main className="pt-24 pb-16 md:pt-28 md:pb-24">
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -87,7 +90,8 @@ const FoundItems = () => {
           {/* Error State */}
           {error && (
             <div className="bg-destructive/10 border border-destructive text-destructive p-4 rounded-lg mb-6">
-              Terjadi kesalahan saat memuat data: {error instanceof Error ? error.message : 'Unknown error'}
+              Terjadi kesalahan saat memuat data:{" "}
+              {error instanceof Error ? error.message : "Unknown error"}
             </div>
           )}
 
@@ -109,18 +113,20 @@ const FoundItems = () => {
                 ))}
               </div>
             </>
-          ) : !isLoading && (
-            <div className="text-center py-16">
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                <Package className="w-10 h-10 text-muted-foreground" />
+          ) : (
+            !isLoading && (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                  <Package className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  Tidak ada barang ditemukan
+                </h3>
+                <p className="text-muted-foreground">
+                  Coba ubah filter pencarian Anda
+                </p>
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">
-                Tidak ada barang ditemukan
-              </h3>
-              <p className="text-muted-foreground">
-                Coba ubah filter pencarian Anda
-              </p>
-            </div>
+            )
           )}
         </div>
       </main>

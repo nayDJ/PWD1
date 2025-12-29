@@ -1,59 +1,62 @@
-import { Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-
+import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Contact = () => {
   const contactInfo = [
     {
       icon: Mail,
-      title: 'Email',
-      value: 'Nayaka-Rudhy@lostandfound.id',
-      href: 'mailto:Nayaka-Rudhy@lostandfound.id',
+      title: "Email",
+      value: "Nayaka-Rudhy@lostandfound.id",
+      href: "mailto:Nayaka-Rudhy@lostandfound.id",
     },
     {
       icon: Phone,
-      title: 'Telepon',
-      value: '+62 21 1234 5678',
-      href: 'tel:+622112345678',
+      title: "Telepon",
+      value: "+62 21 1234 5678",
+      href: "tel:+622112345678",
     },
     {
       icon: MessageCircle,
-      title: 'WhatsApp',
-      value: '+62 812 3456 7890',
-      href: 'https://wa.me/6281234567890',
+      title: "WhatsApp",
+      value: "+62 812 3456 7890",
+      href: "https://wa.me/6281234567890",
     },
     {
       icon: MapPin,
-      title: 'Alamat',
-      value: 'Yogyakarta, Indonesia',
-      href: '#',
+      title: "Alamat",
+      value: "Yogyakarta, Indonesia",
+      href: "#",
     },
   ];
 
   const faqs = [
     {
-      question: 'Bagaimana cara melaporkan barang hilang?',
-      answer: 'Klik tombol "Laporkan Barang Hilang" di halaman utama, lalu isi formulir dengan detail barang yang hilang termasuk foto, lokasi, dan deskripsi.',
+      question: "Bagaimana cara melaporkan barang hilang?",
+      answer:
+        'Klik tombol "Laporkan Barang Hilang" di halaman utama, lalu isi formulir dengan detail barang yang hilang termasuk foto, lokasi, dan deskripsi.',
     },
     {
-      question: 'Apakah layanan ini berbayar?',
-      answer: 'Tidak, layanan Lost & Found kami sepenuhnya gratis untuk membantu masyarakat menemukan barang mereka.',
+      question: "Apakah layanan ini berbayar?",
+      answer:
+        "Tidak, layanan Lost & Found kami sepenuhnya gratis untuk membantu masyarakat menemukan barang mereka.",
     },
     {
-      question: 'Bagaimana cara mengklaim barang yang ditemukan?',
-      answer: 'Hubungi pelapor melalui kontak yang tersedia dan berikan bukti kepemilikan seperti foto, nota pembelian, atau ciri-ciri khusus barang.',
+      question: "Bagaimana cara mengklaim barang yang ditemukan?",
+      answer:
+        "Hubungi pelapor melalui kontak yang tersedia dan berikan bukti kepemilikan seperti foto, nota pembelian, atau ciri-ciri khusus barang.",
     },
     {
-      question: 'Apakah data saya aman?',
-      answer: 'Ya, kami menjaga keamanan data Anda dan hanya menampilkan informasi yang diperlukan untuk proses pelaporan dan klaim.',
+      question: "Apakah data saya aman?",
+      answer:
+        "Ya, kami menjaga keamanan data Anda dan hanya menampilkan informasi yang diperlukan untuk proses pelaporan dan klaim.",
     },
   ];
 
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar />
-      
+
       <main className="pt-24 pb-16 md:pt-28 md:pb-24">
         <div className="container mx-auto px-4">
           {/* Header */}
@@ -62,7 +65,8 @@ const Contact = () => {
               Hubungi Kami
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ada pertanyaan atau membutuhkan bantuan? Tim kami siap membantu Anda.
+              Ada pertanyaan atau membutuhkan bantuan? Tim kami siap membantu
+              Anda.
             </p>
           </div>
 
@@ -83,8 +87,12 @@ const Contact = () => {
                       <info.icon className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">{info.title}</p>
-                      <p className="font-medium text-foreground">{info.value}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {info.title}
+                      </p>
+                      <p className="font-medium text-foreground">
+                        {info.value}
+                      </p>
                     </div>
                   </a>
                 ))}
@@ -98,10 +106,7 @@ const Contact = () => {
               </h2>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <div
-                    key={index}
-                    className="p-4 rounded-xl bg-secondary/50"
-                  >
+                  <div key={index} className="p-4 rounded-xl bg-secondary/50">
                     <h3 className="font-semibold text-foreground mb-2">
                       {faq.question}
                     </h3>

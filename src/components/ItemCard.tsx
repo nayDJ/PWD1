@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { MapPin, Calendar, Tag } from 'lucide-react';
-import type { Item } from '@/lib/mockData';
-import { Badge } from '@/components/ui/badge';
+import { Link } from "react-router-dom";
+import { MapPin, Calendar, Tag } from "lucide-react";
+import type { Item } from "@/lib/mockData";
+import { Badge } from "@/components/ui/badge";
 
 interface ItemCardProps {
   item: Item;
@@ -9,10 +9,10 @@ interface ItemCardProps {
 
 const ItemCard = ({ item }: ItemCardProps) => {
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
+    return new Date(dateStr).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -28,14 +28,14 @@ const ItemCard = ({ item }: ItemCardProps) => {
           />
           <div className="absolute top-3 left-3">
             <Badge
-              variant={item.type === 'lost' ? 'destructive' : 'default'}
+              variant={item.type === "lost" ? "destructive" : "default"}
               className={`${
-                item.type === 'lost'
-                  ? 'bg-destructive/90 text-destructive-foreground'
-                  : 'bg-primary/90 text-primary-foreground'
+                item.type === "lost"
+                  ? "bg-destructive/90 text-destructive-foreground"
+                  : "bg-primary/90 text-primary-foreground"
               } backdrop-blur-sm`}
             >
-              {item.type === 'lost' ? 'Hilang' : 'Ditemukan'}
+              {item.type === "lost" ? "Hilang" : "Ditemukan"}
             </Badge>
           </div>
         </div>
@@ -45,7 +45,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
           <h3 className="font-semibold text-lg text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
             {item.name}
           </h3>
-          
+
           <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
             {item.description}
           </p>

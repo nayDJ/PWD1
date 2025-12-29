@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Upload, X, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { categories, locations } from '@/lib/mockData';
-import { useToast } from '@/hooks/use-toast';
-import { useAddItem } from '@/hooks/useSupabase';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Upload, X, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { categories, locations } from "@/lib/mockData";
+import { useToast } from "@/hooks/use-toast";
+import { useAddItem } from "@/hooks/useSupabase";
 
 interface ReportFormProps {
-  type: 'lost' | 'found';
+  type: "lost" | "found";
 }
 
 const ReportForm = ({ type }: ReportFormProps) => {
@@ -15,14 +15,14 @@ const ReportForm = ({ type }: ReportFormProps) => {
   const { toast } = useToast();
   const { mutate: addItem, isPending } = useAddItem();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    location: '',
-    date: '',
-    description: '',
-    contact: '',
+    name: "",
+    category: "",
+    location: "",
+    date: "",
+    description: "",
+    contact: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -52,18 +52,22 @@ const ReportForm = ({ type }: ReportFormProps) => {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    
-    if (!formData.name.trim()) newErrors.name = 'Nama barang wajib diisi';
-    if (!formData.category) newErrors.category = 'Pilih kategori';
-    if (!formData.location) newErrors.location = 'Pilih lokasi';
-    if (!formData.date) newErrors.date = 'Tanggal wajib diisi';
-    if (!formData.description.trim()) newErrors.description = 'Deskripsi wajib diisi';
-    if (!formData.contact.trim()) newErrors.contact = 'Kontak wajib diisi';
-    
+
+    if (!formData.name.trim()) newErrors.name = "Nama barang wajib diisi";
+    if (!formData.category) newErrors.category = "Pilih kategori";
+    if (!formData.location) newErrors.location = "Pilih lokasi";
+    if (!formData.date) newErrors.date = "Tanggal wajib diisi";
+    if (!formData.description.trim())
+      newErrors.description = "Deskripsi wajib diisi";
+    if (!formData.contact.trim()) newErrors.contact = "Kontak wajib diisi";
+
     // Validate phone number
     const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,10}$/;
-    if (formData.contact && !phoneRegex.test(formData.contact.replace(/\s/g, ''))) {
-      newErrors.contact = 'Format nomor telepon tidak valid';
+    if (
+      formData.contact &&
+      !phoneRegex.test(formData.contact.replace(/\s/g, ""))
+    ) {
+      newErrors.contact = "Format nomor telepon tidak valid";
     }
 
     setErrors(newErrors);
@@ -72,7 +76,7 @@ const ReportForm = ({ type }: ReportFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       toast({
         title: "Formulir tidak lengkap",
@@ -92,29 +96,30 @@ const ReportForm = ({ type }: ReportFormProps) => {
       image_url: imagePreview,
       contact_name: formData.name,
       contact_phone: formData.contact,
-      contact_email: '',
+      contact_email: "",
     };
 
     try {
       await addItem(dataToSubmit);
       toast({
         title: "Laporan berhasil dikirim!",
-        description: `Laporan barang ${type === 'lost' ? 'hilang' : 'ditemukan'} Anda telah tersimpan.`,
+        description: `Laporan barang ${type === "lost" ? "hilang" : "ditemukan"} Anda telah tersimpan.`,
       });
-      navigate(type === 'lost' ? '/lost' : '/found');
+      navigate(type === "lost" ? "/lost" : "/found");
     } catch (error) {
       toast({
         title: "Gagal mengirim laporan",
-        description: error instanceof Error ? error.message : "Terjadi kesalahan",
+        description:
+          error instanceof Error ? error.message : "Terjadi kesalahan",
         variant: "destructive",
       });
     }
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -167,12 +172,14 @@ const ReportForm = ({ type }: ReportFormProps) => {
         <input
           type="text"
           value={formData.name}
-          onChange={(e) => handleInputChange('name', e.target.value)}
+          onChange={(e) => handleInputChange("name", e.target.value)}
           placeholder="Contoh: iPhone 14 Pro Max"
-          className={`input-field ${errors.name ? 'border-destructive focus:ring-destructive' : ''}`}
+          className={`input-field ${errors.name ? "border-destructive focus:ring-destructive" : ""}`}
           maxLength={100}
         />
-        {errors.name && <p className="text-destructive text-sm mt-1">{errors.name}</p>}
+        {errors.name && (
+          <p className="text-destructive text-sm mt-1">{errors.name}</p>
+        )}
       </div>
 
       {/* Category & Location */}
@@ -183,15 +190,19 @@ const ReportForm = ({ type }: ReportFormProps) => {
           </label>
           <select
             value={formData.category}
-            onChange={(e) => handleInputChange('category', e.target.value)}
-            className={`input-field appearance-none cursor-pointer ${errors.category ? 'border-destructive' : ''}`}
+            onChange={(e) => handleInputChange("category", e.target.value)}
+            className={`input-field appearance-none cursor-pointer ${errors.category ? "border-destructive" : ""}`}
           >
             <option value="">Pilih kategori</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
           </select>
-          {errors.category && <p className="text-destructive text-sm mt-1">{errors.category}</p>}
+          {errors.category && (
+            <p className="text-destructive text-sm mt-1">{errors.category}</p>
+          )}
         </div>
 
         <div>
@@ -200,31 +211,38 @@ const ReportForm = ({ type }: ReportFormProps) => {
           </label>
           <select
             value={formData.location}
-            onChange={(e) => handleInputChange('location', e.target.value)}
-            className={`input-field appearance-none cursor-pointer ${errors.location ? 'border-destructive' : ''}`}
+            onChange={(e) => handleInputChange("location", e.target.value)}
+            className={`input-field appearance-none cursor-pointer ${errors.location ? "border-destructive" : ""}`}
           >
             <option value="">Pilih lokasi</option>
             {locations.map((loc) => (
-              <option key={loc} value={loc}>{loc}</option>
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
             ))}
           </select>
-          {errors.location && <p className="text-destructive text-sm mt-1">{errors.location}</p>}
+          {errors.location && (
+            <p className="text-destructive text-sm mt-1">{errors.location}</p>
+          )}
         </div>
       </div>
 
       {/* Date */}
       <div>
         <label className="block text-sm font-medium text-foreground mb-2">
-          Tanggal {type === 'lost' ? 'Hilang' : 'Ditemukan'} <span className="text-destructive">*</span>
+          Tanggal {type === "lost" ? "Hilang" : "Ditemukan"}{" "}
+          <span className="text-destructive">*</span>
         </label>
         <input
           type="date"
           value={formData.date}
-          onChange={(e) => handleInputChange('date', e.target.value)}
-          max={new Date().toISOString().split('T')[0]}
-          className={`input-field ${errors.date ? 'border-destructive' : ''}`}
+          onChange={(e) => handleInputChange("date", e.target.value)}
+          max={new Date().toISOString().split("T")[0]}
+          className={`input-field ${errors.date ? "border-destructive" : ""}`}
         />
-        {errors.date && <p className="text-destructive text-sm mt-1">{errors.date}</p>}
+        {errors.date && (
+          <p className="text-destructive text-sm mt-1">{errors.date}</p>
+        )}
       </div>
 
       {/* Description */}
@@ -234,14 +252,18 @@ const ReportForm = ({ type }: ReportFormProps) => {
         </label>
         <textarea
           value={formData.description}
-          onChange={(e) => handleInputChange('description', e.target.value)}
+          onChange={(e) => handleInputChange("description", e.target.value)}
           placeholder="Jelaskan ciri-ciri barang secara detail..."
           rows={4}
-          className={`input-field resize-none ${errors.description ? 'border-destructive' : ''}`}
+          className={`input-field resize-none ${errors.description ? "border-destructive" : ""}`}
           maxLength={1000}
         />
-        <p className="text-xs text-muted-foreground mt-1">{formData.description.length}/1000 karakter</p>
-        {errors.description && <p className="text-destructive text-sm mt-1">{errors.description}</p>}
+        <p className="text-xs text-muted-foreground mt-1">
+          {formData.description.length}/1000 karakter
+        </p>
+        {errors.description && (
+          <p className="text-destructive text-sm mt-1">{errors.description}</p>
+        )}
       </div>
 
       {/* Contact */}
@@ -252,11 +274,13 @@ const ReportForm = ({ type }: ReportFormProps) => {
         <input
           type="tel"
           value={formData.contact}
-          onChange={(e) => handleInputChange('contact', e.target.value)}
+          onChange={(e) => handleInputChange("contact", e.target.value)}
           placeholder="Contoh: 081234567890"
-          className={`input-field ${errors.contact ? 'border-destructive' : ''}`}
+          className={`input-field ${errors.contact ? "border-destructive" : ""}`}
         />
-        {errors.contact && <p className="text-destructive text-sm mt-1">{errors.contact}</p>}
+        {errors.contact && (
+          <p className="text-destructive text-sm mt-1">{errors.contact}</p>
+        )}
       </div>
 
       {/* Submit Button */}
@@ -272,7 +296,7 @@ const ReportForm = ({ type }: ReportFormProps) => {
             Mengirim...
           </>
         ) : (
-          `Kirim Laporan ${type === 'lost' ? 'Barang Hilang' : 'Barang Ditemukan'}`
+          `Kirim Laporan ${type === "lost" ? "Barang Hilang" : "Barang Ditemukan"}`
         )}
       </Button>
     </form>

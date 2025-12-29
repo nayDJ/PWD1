@@ -1,5 +1,12 @@
-import { Link } from 'react-router-dom';
-import { MapPin, Mail, Phone, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Link } from "react-router-dom";
+import {
+  MapPin,
+  Mail,
+  Phone,
+  Facebook,
+  Twitter,
+  Instagram,
+} from "lucide-react";
 
 const Footer = () => {
   return (
@@ -17,7 +24,8 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Platform terpercaya untuk membantu Anda menemukan barang hilang dan mengembalikan barang temuan kepada pemiliknya.
+              Platform terpercaya untuk membantu Anda menemukan barang hilang
+              dan mengembalikan barang temuan kepada pemiliknya.
             </p>
           </div>
 
@@ -26,22 +34,34 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Navigasi</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Beranda
                 </Link>
               </li>
               <li>
-                <Link to="/lost" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/lost"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Barang Hilang
                 </Link>
               </li>
               <li>
-                <Link to="/found" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/found"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Barang Ditemukan
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/contact"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Bantuan
                 </Link>
               </li>
@@ -53,12 +73,18 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground mb-4">Laporkan</h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/report-lost" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/report-lost"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Lapor Barang Hilang
                 </Link>
               </li>
               <li>
-                <Link to="/report-found" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link
+                  to="/report-found"
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm"
+                >
                   Lapor Barang Ditemukan
                 </Link>
               </li>
@@ -79,24 +105,24 @@ const Footer = () => {
               </li>
             </ul>
             <div className="flex items-center gap-3 mt-4">
-              <a 
-                href="https://www.facebook.com" 
+              <a
+                href="https://www.facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 <Facebook className="w-4 h-4" />
               </a>
-              <a 
-                href="https://www.twitter.com" 
+              <a
+                href="https://www.twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 <Twitter className="w-4 h-4" />
               </a>
-              <a 
-                href="https://www.instagram.com/nayakaadj" 
+              <a
+                href="https://www.instagram.com/nayakaadj"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"

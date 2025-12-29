@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const navLinks = [
-    { path: '/', label: 'Beranda' },
-    { path: '/lost', label: 'Barang Hilang' },
-    { path: '/found', label: 'Barang Ditemukan' },
-    { path: '/contact', label: 'Bantuan' },
+    { path: "/", label: "Beranda" },
+    { path: "/lost", label: "Barang Hilang" },
+    { path: "/found", label: "Barang Ditemukan" },
+    { path: "/contact", label: "Bantuan" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -38,8 +38,8 @@ const Navbar = () => {
                 to={link.path}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   isActive(link.path)
-                    ? 'text-primary bg-primary/10'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
               >
                 {link.label}
@@ -50,7 +50,11 @@ const Navbar = () => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link to="/report-lost">
-              <Button variant="outline" size="default" className="text-white border-white">
+              <Button
+                variant="outline"
+                size="default"
+                className="text-white border-white hover:text-white"
+              >
                 Laporkan Hilang
               </Button>
             </Link>
@@ -85,8 +89,8 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                   className={`px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
                     isActive(link.path)
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   {link.label}
