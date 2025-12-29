@@ -166,7 +166,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature) => (
+            {features.map((feature, _index) => (
               <div
                 key={feature.title}
                 className="p-6 md:p-8 bg-background/50 backdrop-blur-lg rounded-2xl border border-border card-hover"
