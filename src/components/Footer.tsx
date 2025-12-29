@@ -106,7 +106,7 @@ const Footer = () => {
             </ul>
             <div className="flex items-center gap-3 mt-4">
               <a
-                href="https://www.facebook.com"
+                href="https://www.facebook.com/PrabowoSubianto"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
@@ -114,7 +114,7 @@ const Footer = () => {
                 <Facebook className="w-4 h-4" />
               </a>
               <a
-                href="https://www.twitter.com"
+                href="https://www.twitter.com/prabowo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
@@ -122,7 +122,7 @@ const Footer = () => {
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="https://www.instagram.com/nayakaadj"
+                href="https://www.instagram.com/prabowo"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
