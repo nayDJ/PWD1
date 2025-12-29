@@ -41,7 +41,7 @@ const Index = () => {
     return combined
       .sort(
         (a: any, b: any) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime(),
+          new Date(b.date).getTime() - new Date(a.date).getTime()
       )
       .slice(0, 3);
   }, [lostItems, foundItems]);
@@ -166,7 +166,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <div
                 key={feature.title}
                 className="p-6 md:p-8 bg-background/50 backdrop-blur-lg rounded-2xl border border-border card-hover"
