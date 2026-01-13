@@ -1,18 +1,27 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, MapPin } from "lucide-react";
+import { Menu, X, MapPin, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth, useProfile, useLogout } from "@/hooks/useSupabase";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { data: session } = useAuth();
+  const { data: profile } = useProfile(session?.user?.id);
+  const { mutateAsync: logout } = useLogout();
 
-  const navLinks = [
+  const baseNavLinks = [
     { path: "/", label: "Beranda" },
     { path: "/lost", label: "Barang Hilang" },
     { path: "/found", label: "Barang Ditemukan" },
     { path: "/contact", label: "Bantuan" },
   ];
+
+  const navLinks = session ? [
+    ...baseNavLinks,
+    { path: "/chat", label: "Chat" }
+  ] : baseNavLinks;
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -49,20 +58,45 @@ const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/report-lost">
-              <Button
-                variant="outline"
-                size="default"
-                className="text-white border-white hover:text-white"
-              >
-                Laporkan Hilang
-              </Button>
-            </Link>
-            <Link to="/report-found">
-              <Button variant="default" size="default">
-                Laporkan Temuan
-              </Button>
-            </Link>
+            {session ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-foreground">
+                  Hai, {profile?.role === 'admin' ? 'Admin' : session.user.email?.split('@')[0]}
+                </span>
+                 {profile?.role === 'admin' && (
+                   <Link to="/admin">
+                     <Button variant="outline" size="sm" className="text-white">
+                       Dashboard
+                     </Button>
+                   </Link>
+                 )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    await logout();
+                    window.location.href = "/";
+                  }}
+                  className="text-white hover:text-white"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Keluar
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" size="default" className="text-white border-white hover:text-white">
+                    Masuk
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="default" size="default">
+                    Daftar
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -97,16 +131,45 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
-                <Link to="/report-lost" onClick={() => setIsOpen(false)}>
-                  <Button variant="outline" className="w-full">
-                    Laporkan Hilang
-                  </Button>
-                </Link>
-                <Link to="/report-found" onClick={() => setIsOpen(false)}>
-                  <Button variant="default" className="w-full">
-                    Laporkan Temuan
-                  </Button>
-                </Link>
+                {session ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="text-sm text-foreground text-center py-2">
+                      Hai, {profile?.role === 'admin' ? 'Admin' : session.user.email?.split('@')[0]}
+                    </div>
+                     {profile?.role === 'admin' && (
+                       <Link to="/admin" onClick={() => setIsOpen(false)}>
+                         <Button variant="outline" className="w-full text-white">
+                           Dashboard
+                         </Button>
+                       </Link>
+                     )}
+                    <Button
+                      variant="ghost"
+                      onClick={async () => {
+                        await logout();
+                        setIsOpen(false);
+                        window.location.href = "/";
+                      }}
+                      className="w-full justify-start"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Keluar
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Link to="/login" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full">
+                        Masuk
+                      </Button>
+                    </Link>
+                    <Link to="/register" onClick={() => setIsOpen(false)}>
+                      <Button variant="default" className="w-full">
+                        Daftar
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

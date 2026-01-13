@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import backgroundImage from "/images/background.jpg";
 import Index from "./pages/Index";
 import LostItems from "./pages/LostItems";
@@ -9,10 +8,24 @@ import ReportLost from "./pages/ReportLost";
 import ReportFound from "./pages/ReportFound";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import AuthLanding from "./pages/AuthLanding";
+import Chat from "./pages/Chat";
+import { useAuth } from "./hooks/useSupabase";
 
-const queryClient = new QueryClient();
+function AppContent() {
+  const { data: session } = useAuth();
 
-function App() {
+  if (!session) {
+    return (
+      <Router>
+        <AuthLanding />
+      </Router>
+    );
+  }
+
   return (
     <div
       style={{
@@ -33,8 +46,7 @@ function App() {
           zIndex: 2,
         }}
       >
-        <QueryClientProvider client={queryClient}>
-          <Router>
+        <Router>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/lost" element={<LostItems />} />
@@ -43,13 +55,20 @@ function App() {
               <Route path="/report-lost" element={<ReportLost />} />
               <Route path="/report-found" element={<ReportFound />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </Router>
-        </QueryClientProvider>
+        </Router>
       </div>
     </div>
   );
+}
+
+function App() {
+  return <AppContent />;
 }
 
 export default App;

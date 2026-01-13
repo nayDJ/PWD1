@@ -16,13 +16,17 @@ import { Badge } from "@/components/ui/badge";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
-import { useItem, useUpdateItem } from "@/hooks/useSupabase";
+import { useItem, useUpdateItem, useAuth, useProfile } from "@/hooks/useSupabase";
+import { Chat } from "@/components/Chat";
 
 const ItemDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isChangingStatus, setIsChangingStatus] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const { data: session } = useAuth();
+  const { data: profile, isLoading: profileLoading } = useProfile(session?.user?.id);
 
   // Fetch from Supabase database
   const { data: dbItem, isLoading } = useItem(id || "");
@@ -236,37 +240,39 @@ const ItemDetail = () => {
                 </p>
               </div>
 
-              {/* Contact Section */}
-              <div className="bg-card/50 backdrop-blur-lg rounded-2xl border border-border p-6 mb-6">
-                <h2 className="text-lg font-semibold text-foreground mb-4">
-                  Informasi Kontak
-                </h2>
-                <div className="flex items-center gap-3 text-muted-foreground mb-4">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <span>{item.contact}</span>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    variant="default"
-                    className="flex-1"
-                    onClick={handleContact}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    Hubungi via WhatsApp
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="text-foreground hover:text-primary"
-                    onClick={handleShare}
-                  >
-                    <Share2 className="w-5 h-5" />
-                    Bagikan
-                  </Button>
-                </div>
-              </div>
+                {/* Contact Section - Only for Admin */}
+                {!profileLoading && profile?.role === 'admin' && (
+                 <div className="bg-card/50 backdrop-blur-lg rounded-2xl border border-border p-6 mb-6">
+                   <h2 className="text-lg font-semibold text-foreground mb-4">
+                     Informasi Kontak
+                   </h2>
+                   <div className="flex items-center gap-3 text-muted-foreground mb-4">
+                     <Phone className="w-5 h-5 text-primary" />
+                     <span>{item.contact}</span>
+                   </div>
+                   <div className="flex flex-col sm:flex-row gap-3">
+                     <Button
+                       variant="default"
+                       className="flex-1"
+                       onClick={handleContact}
+                     >
+                       <MessageCircle className="w-5 h-5" />
+                       Hubungi via WhatsApp
+                     </Button>
+                     <Button
+                       variant="outline"
+                       className="text-foreground hover:text-primary"
+                       onClick={handleShare}
+                     >
+                       <Share2 className="w-5 h-5" />
+                       Bagikan
+                     </Button>
+                   </div>
+                 </div>
+               )}
 
-              {/* Status Change Section - Only show for DB items */}
-              {dbItem && (
+              {/* Status Change Section - Only for Admin */}
+              {!profileLoading && profile?.role === 'admin' && dbItem && (
                 <div className="bg-primary/5 rounded-2xl border border-primary/10 p-6 mb-6">
                   <h2 className="text-lg font-semibold text-foreground mb-3">
                     Perbarui Status
@@ -296,9 +302,44 @@ const ItemDetail = () => {
                     )}
                   </Button>
                 </div>
-              )}
+               )}
 
-              {/* Tips */}
+               {/* Chat Section - Only for logged-in non-admin users */}
+               {session && !profileLoading && profile?.role !== 'admin' && (
+                 <div className="bg-primary/5 rounded-2xl border border-primary/10 p-6 mb-6">
+                   <h2 className="text-lg font-semibold text-foreground mb-3">
+                     Butuh Bantuan?
+                   </h2>
+                   <p className="text-muted-foreground mb-4 text-sm">
+                     Chat langsung dengan admin untuk informasi lebih lanjut tentang barang ini.
+                   </p>
+                   <Button
+                     variant="default"
+                     className="w-full"
+                     onClick={() => {
+                       setShowChat(true);
+                       // Save to localStorage as active chat
+                       const activeChats = JSON.parse(localStorage.getItem('activeChats') || '[]');
+                       const existingIndex = activeChats.findIndex((c: any) => c.itemId === item.id);
+                       if (existingIndex >= 0) {
+                         activeChats[existingIndex].lastActivity = Date.now();
+                       } else {
+                         activeChats.push({
+                           itemId: item.id,
+                           itemTitle: item.name,
+                           lastActivity: Date.now()
+                         });
+                       }
+                       localStorage.setItem('activeChats', JSON.stringify(activeChats));
+                     }}
+                   >
+                     <MessageCircle className="w-5 h-5 mr-2" />
+                     Chat dengan Admin
+                   </Button>
+                 </div>
+               )}
+
+               {/* Tips */}
               <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10">
                 <h3 className="font-semibold text-foreground mb-2">
                   Tips Keamanan
@@ -320,6 +361,15 @@ const ItemDetail = () => {
       </main>
 
       <Footer />
+
+      {/* Chat Modal */}
+      {showChat && (
+        <Chat
+          itemId={item.id}
+          itemTitle={item.name}
+          onClose={() => setShowChat(false)}
+        />
+      )}
     </div>
   );
 };

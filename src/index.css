@@ -61,8 +61,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -185,5 +183,15 @@ button:focus-visible {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full h-9 px-3 py-1 rounded-md border border-gray-300 bg-transparent text-base placeholder:text-muted-foreground transition-[color,box-shadow] outline-none focus:border-ring focus:ring-ring/50 focus:ring-[3px] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .dark .input-field {
+    @apply border-gray-600 bg-input/30;
   }
 }

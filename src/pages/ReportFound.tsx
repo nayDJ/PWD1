@@ -1,10 +1,18 @@
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ReportForm from "@/components/ReportForm";
+import { useAuth } from "@/hooks/useSupabase";
 
 const ReportFound = () => {
+  const { data: session } = useAuth();
+  const location = useLocation();
+
+  if (!session) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar />

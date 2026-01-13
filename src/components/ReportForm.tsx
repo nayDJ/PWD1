@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { categories, locations } from "@/lib/mockData";
 import { useToast } from "@/hooks/use-toast";
 import { useAddItem } from "@/hooks/useSupabase";
+import { supabase } from "@/lib/supabase";
 
 interface ReportFormProps {
   type: "lost" | "found";
@@ -15,6 +16,7 @@ const ReportForm = ({ type }: ReportFormProps) => {
   const { toast } = useToast();
   const { mutate: addItem, isPending } = useAddItem();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,6 +25,8 @@ const ReportForm = ({ type }: ReportFormProps) => {
     date: "",
     description: "",
     contact: "",
+    contactName: "",
+    contactEmail: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -38,6 +42,7 @@ const ReportForm = ({ type }: ReportFormProps) => {
         });
         return;
       }
+      setImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
@@ -48,6 +53,7 @@ const ReportForm = ({ type }: ReportFormProps) => {
 
   const removeImage = () => {
     setImagePreview(null);
+    setImageFile(null);
   };
 
   const validateForm = () => {
@@ -60,6 +66,8 @@ const ReportForm = ({ type }: ReportFormProps) => {
     if (!formData.description.trim())
       newErrors.description = "Deskripsi wajib diisi";
     if (!formData.contact.trim()) newErrors.contact = "Kontak wajib diisi";
+    if (!formData.contactName.trim())
+      newErrors.contactName = "Nama kontak wajib diisi";
 
     // Validate phone number
     const phoneRegex = /^(\+62|62|0)8[1-9][0-9]{6,10}$/;
@@ -68,6 +76,14 @@ const ReportForm = ({ type }: ReportFormProps) => {
       !phoneRegex.test(formData.contact.replace(/\s/g, ""))
     ) {
       newErrors.contact = "Format nomor telepon tidak valid";
+    }
+
+    // Validate email if provided
+    if (
+      formData.contactEmail &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail)
+    ) {
+      newErrors.contactEmail = "Format email tidak valid";
     }
 
     setErrors(newErrors);
@@ -86,6 +102,47 @@ const ReportForm = ({ type }: ReportFormProps) => {
       return;
     }
 
+    let imageUrl = "";
+    if (imageFile) {
+      const fileExt = imageFile.name.split(".").pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+
+      try {
+        console.log("Uploading image:", fileName);
+        const { error: uploadError } = await supabase.storage
+          .from("images")
+          .upload(fileName, imageFile);
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          toast({
+            title: "Gagal upload gambar",
+            description: uploadError.message,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from("images")
+          .getPublicUrl(fileName);
+
+        imageUrl = publicUrlData.publicUrl;
+        console.log("Image uploaded successfully:", imageUrl);
+      } catch (error) {
+        console.error("Image upload exception:", error);
+        toast({
+          title: "Gagal upload gambar",
+          description:
+            error instanceof Error
+              ? error.message
+              : "Terjadi kesalahan saat upload",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     // Prepare data for Supabase
     const dataToSubmit = {
       title: formData.name,
@@ -93,20 +150,27 @@ const ReportForm = ({ type }: ReportFormProps) => {
       category: formData.category,
       type: type,
       location: formData.location,
-      image_url: imagePreview,
-      contact_name: formData.name,
+      date: formData.date,
+      image_url: imageUrl,
+      contact_name: formData.contactName,
       contact_phone: formData.contact,
-      contact_email: "",
+      contact_email: formData.contactEmail,
     };
 
     try {
+      console.log("Submitting form data:", dataToSubmit);
       await addItem(dataToSubmit);
       toast({
         title: "Laporan berhasil dikirim!",
-        description: `Laporan barang ${type === "lost" ? "hilang" : "ditemukan"} Anda telah tersimpan.`,
+        description: `Laporan barang ${
+          type === "lost" ? "hilang" : "ditemukan"
+        } Anda telah tersimpan.`,
       });
-      navigate(type === "lost" ? "/lost" : "/found");
+      setTimeout(() => {
+        navigate(type === "lost" ? "/lost" : "/found");
+      }, 1500);
     } catch (error) {
+      console.error("Form submission error:", error);
       toast({
         title: "Gagal mengirim laporan",
         description:
@@ -174,7 +238,9 @@ const ReportForm = ({ type }: ReportFormProps) => {
           value={formData.name}
           onChange={(e) => handleInputChange("name", e.target.value)}
           placeholder="Contoh: iPhone 14 Pro Max"
-          className={`input-field ${errors.name ? "border-destructive focus:ring-destructive" : ""}`}
+          className={`input-field ${
+            errors.name ? "border-destructive focus:ring-destructive" : ""
+          }`}
           maxLength={100}
         />
         {errors.name && (
@@ -191,7 +257,9 @@ const ReportForm = ({ type }: ReportFormProps) => {
           <select
             value={formData.category}
             onChange={(e) => handleInputChange("category", e.target.value)}
-            className={`input-field appearance-none cursor-pointer ${errors.category ? "border-destructive" : ""}`}
+            className={`input-field appearance-none cursor-pointer ${
+              errors.category ? "border-destructive" : ""
+            }`}
           >
             <option value="">Pilih kategori</option>
             {categories.map((cat) => (
@@ -212,7 +280,9 @@ const ReportForm = ({ type }: ReportFormProps) => {
           <select
             value={formData.location}
             onChange={(e) => handleInputChange("location", e.target.value)}
-            className={`input-field appearance-none cursor-pointer ${errors.location ? "border-destructive" : ""}`}
+            className={`input-field appearance-none cursor-pointer ${
+              errors.location ? "border-destructive" : ""
+            }`}
           >
             <option value="">Pilih lokasi</option>
             {locations.map((loc) => (
@@ -255,7 +325,9 @@ const ReportForm = ({ type }: ReportFormProps) => {
           onChange={(e) => handleInputChange("description", e.target.value)}
           placeholder="Jelaskan ciri-ciri barang secara detail..."
           rows={4}
-          className={`input-field resize-none ${errors.description ? "border-destructive" : ""}`}
+          className={`input-field resize-none ${
+            errors.description ? "border-destructive" : ""
+          }`}
           maxLength={1000}
         />
         <p className="text-xs text-muted-foreground mt-1">
@@ -276,10 +348,51 @@ const ReportForm = ({ type }: ReportFormProps) => {
           value={formData.contact}
           onChange={(e) => handleInputChange("contact", e.target.value)}
           placeholder="Contoh: 081234567890"
-          className={`input-field ${errors.contact ? "border-destructive" : ""}`}
+          className={`input-field ${
+            errors.contact ? "border-destructive" : ""
+          }`}
         />
         {errors.contact && (
           <p className="text-destructive text-sm mt-1">{errors.contact}</p>
+        )}
+      </div>
+
+      {/* Contact Name */}
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-2">
+          Nama Kontak <span className="text-destructive">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.contactName}
+          onChange={(e) => handleInputChange("contactName", e.target.value)}
+          placeholder="Nama Anda atau orang yang bisa dihubungi"
+          className={`input-field ${
+            errors.contactName ? "border-destructive" : ""
+          }`}
+          maxLength={100}
+        />
+        {errors.contactName && (
+          <p className="text-destructive text-sm mt-1">{errors.contactName}</p>
+        )}
+      </div>
+
+      {/* Contact Email */}
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-2">
+          Email Kontak (Opsional)
+        </label>
+        <input
+          type="email"
+          value={formData.contactEmail}
+          onChange={(e) => handleInputChange("contactEmail", e.target.value)}
+          placeholder="Contoh: email@example.com"
+          className={`input-field ${
+            errors.contactEmail ? "border-destructive" : ""
+          }`}
+        />
+        {errors.contactEmail && (
+          <p className="text-destructive text-sm mt-1">{errors.contactEmail}</p>
         )}
       </div>
 
@@ -296,7 +409,9 @@ const ReportForm = ({ type }: ReportFormProps) => {
             Mengirim...
           </>
         ) : (
-          `Kirim Laporan ${type === "lost" ? "Barang Hilang" : "Barang Ditemukan"}`
+          `Kirim Laporan ${
+            type === "lost" ? "Barang Hilang" : "Barang Ditemukan"
+          }`
         )}
       </Button>
     </form>
