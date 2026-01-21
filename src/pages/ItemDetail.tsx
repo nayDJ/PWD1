@@ -17,14 +17,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import { useItem, useUpdateItem, useAuth, useProfile } from "@/hooks/useSupabase";
-import { Chat } from "@/components/Chat";
 
 const ItemDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isChangingStatus, setIsChangingStatus] = useState(false);
-  const [showChat, setShowChat] = useState(false);
   const { data: session } = useAuth();
   const { data: profile, isLoading: profileLoading } = useProfile(session?.user?.id);
 
@@ -304,40 +302,40 @@ const ItemDetail = () => {
                 </div>
                )}
 
-               {/* Chat Section - Only for logged-in non-admin users */}
-               {session && !profileLoading && profile?.role !== 'admin' && (
-                 <div className="bg-primary/5 rounded-2xl border border-primary/10 p-6 mb-6">
-                   <h2 className="text-lg font-semibold text-foreground mb-3">
-                     Butuh Bantuan?
-                   </h2>
-                   <p className="text-muted-foreground mb-4 text-sm">
-                     Chat langsung dengan admin untuk informasi lebih lanjut tentang barang ini.
-                   </p>
-                   <Button
-                     variant="default"
-                     className="w-full"
-                     onClick={() => {
-                       setShowChat(true);
-                       // Save to localStorage as active chat
-                       const activeChats = JSON.parse(localStorage.getItem('activeChats') || '[]');
-                       const existingIndex = activeChats.findIndex((c: any) => c.itemId === item.id);
-                       if (existingIndex >= 0) {
-                         activeChats[existingIndex].lastActivity = Date.now();
-                       } else {
-                         activeChats.push({
-                           itemId: item.id,
-                           itemTitle: item.name,
-                           lastActivity: Date.now()
-                         });
-                       }
-                       localStorage.setItem('activeChats', JSON.stringify(activeChats));
-                     }}
-                   >
-                     <MessageCircle className="w-5 h-5 mr-2" />
-                     Chat dengan Admin
-                   </Button>
-                 </div>
-               )}
+                {/* Chat Section - Only for logged-in non-admin users */}
+                {session && !profileLoading && profile?.role !== 'admin' && (
+                  <div className="bg-primary/5 rounded-2xl border border-primary/10 p-6 mb-6">
+                    <h2 className="text-lg font-semibold text-foreground mb-3">
+                      Butuh Bantuan?
+                    </h2>
+                    <p className="text-muted-foreground mb-4 text-sm">
+                      Chat dengan admin untuk informasi lebih lanjut tentang barang ini.
+                    </p>
+                    <Button
+                      variant="default"
+                      className="w-full"
+                      onClick={() => {
+                        // Save to localStorage as active chat for history
+                        const activeChats = JSON.parse(localStorage.getItem('activeChats') || '[]');
+                        const existingIndex = activeChats.findIndex((c: any) => c.itemId === item.id);
+                        if (existingIndex >= 0) {
+                          activeChats[existingIndex].lastActivity = Date.now();
+                        } else {
+                          activeChats.push({
+                            itemId: item.id,
+                            itemTitle: item.name,
+                            lastActivity: Date.now()
+                          });
+                        }
+                        localStorage.setItem('activeChats', JSON.stringify(activeChats));
+                        navigate('/chat');
+                      }}
+                    >
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Chat dengan Admin
+                    </Button>
+                  </div>
+                )}
 
                {/* Tips */}
               <div className="bg-primary/5 rounded-2xl p-6 border border-primary/10">
@@ -358,19 +356,10 @@ const ItemDetail = () => {
             </div>
           </div>
         </div>
-      </main>
+       </main>
 
-      <Footer />
-
-      {/* Chat Modal */}
-      {showChat && (
-        <Chat
-          itemId={item.id}
-          itemTitle={item.name}
-          onClose={() => setShowChat(false)}
-        />
-      )}
-    </div>
+       <Footer />
+     </div>
   );
 };
 

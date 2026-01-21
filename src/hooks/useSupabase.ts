@@ -329,7 +329,7 @@ export const useActiveChats = () => {
         // Get item details
         const { data: items, error: itemError } = await supabase
           .from('items')
-          .select('id, title, type, image_url')
+          .select('id, title, type, image_url, contact_phone')
           .in('id', itemIds);
 
         if (itemError) throw itemError;
@@ -348,6 +348,7 @@ export const useActiveChats = () => {
                 itemTitle: item.title || 'Unknown Item',
                 itemType: item.type || 'unknown',
                 itemImage: item.image_url,
+                itemContact: item.contact_phone,
                 latestMessage: msg.text,
                 latestSender: msg.sender,
                 latestTime: new Date(msg.created_at),

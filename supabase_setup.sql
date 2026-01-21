@@ -100,6 +100,7 @@ CREATE TABLE messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   item_id TEXT NOT NULL,
   sender TEXT NOT NULL CHECK (sender IN ('user', 'admin')),
+  receiver_id UUID REFERENCES auth.users(id), -- Admin yang menerima message
   text TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -116,11 +117,11 @@ CREATE POLICY "Users can insert messages for their items or admins for all" ON m
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
--- Kebijakan untuk select (authenticated users dapat melihat messages untuk items mereka atau admins untuk semua)
-CREATE POLICY "Users can view messages for their items or admins for all" ON messages
+-- Kebijakan untuk select (users dapat melihat messages untuk items mereka, admins dapat melihat semua messages yang ditujukan untuk mereka)
+CREATE POLICY "Users can view messages for their items, admins for messages sent to them" ON messages
   FOR SELECT USING (
     auth.uid() IN (
       SELECT user_id FROM items WHERE id = item_id::bigint
     ) OR
-    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+    (receiver_id = auth.uid() AND EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'))
   );

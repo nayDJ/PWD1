@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/hooks/useSupabase';
-import { Chat } from '@/components/Chat';
 
 interface ActiveChat {
   itemId: string;
@@ -18,7 +17,6 @@ interface ActiveChat {
 const ChatPage = () => {
   const { data: session } = useAuth();
   const [activeChats, setActiveChats] = useState<ActiveChat[]>([]);
-  const [selectedChat, setSelectedChat] = useState<ActiveChat | null>(null);
 
   useEffect(() => {
     // Load active chats from localStorage
@@ -28,6 +26,7 @@ const ChatPage = () => {
         const chats: ActiveChat[] = JSON.parse(stored);
         // Sort by last activity, most recent first
         chats.sort((a, b) => b.lastActivity - a.lastActivity);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveChats(chats);
       } catch (error) {
         console.error('Error parsing active chats:', error);
@@ -35,12 +34,12 @@ const ChatPage = () => {
     }
   }, []);
 
-  const handleChatClick = (chat: ActiveChat) => {
-    setSelectedChat(chat);
-  };
-
-  const handleCloseChat = () => {
-    setSelectedChat(null);
+  const handleWhatsApp = (itemId: string, itemTitle: string) => {
+    const adminNumber = '6285828237071';
+    const message = encodeURIComponent(
+      `Halo Admin, saya ingin chat tentang item: "${itemTitle}" (ID: ${itemId})`
+    );
+    window.open(`https://wa.me/${adminNumber}?text=${message}`, '_blank');
   };
 
   if (!session) {
@@ -117,18 +116,26 @@ const ChatPage = () => {
                     {activeChats.map((chat) => (
                       <div
                         key={chat.itemId}
-                        className="p-4 border border-border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                        onClick={() => handleChatClick(chat)}
+                         className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
                       >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium text-foreground">{chat.itemTitle}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Terakhir aktif: {new Date(chat.lastActivity).toLocaleString('id-ID')}
-                            </p>
-                          </div>
-                          <Badge variant="secondary">Chat</Badge>
-                        </div>
+                         <div className="flex justify-between items-start mb-3">
+                           <div>
+                             <h4 className="font-medium text-foreground">{chat.itemTitle}</h4>
+                             <p className="text-sm text-muted-foreground">
+                               Terakhir aktif: {new Date(chat.lastActivity).toLocaleString('id-ID')}
+                             </p>
+                           </div>
+                           <Badge variant="secondary">Chat</Badge>
+                         </div>
+                         <Button
+                           variant="default"
+                           size="sm"
+                           onClick={() => handleWhatsApp(chat.itemId, chat.itemTitle)}
+                           className="w-full"
+                         >
+                           <MessageCircle className="w-4 h-4 mr-2" />
+                           Chat via WhatsApp
+                         </Button>
                       </div>
                     ))}
                   </CardContent>
@@ -140,22 +147,22 @@ const ChatPage = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4 text-sm">
-                      <div>
-                        <h4 className="font-medium text-foreground mb-2">Cara Menggunakan Chat:</h4>
-                        <ul className="space-y-1 text-muted-foreground">
-                          <li>• Klik tombol "Chat dengan Admin" di detail barang</li>
-                          <li>• Pesan dikirim secara real-time</li>
-                          <li>• Admin akan merespons segera mungkin</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-foreground mb-2">Catatan:</h4>
-                        <ul className="space-y-1 text-muted-foreground">
-                          <li>• Percakapan bersifat sementara</li>
-                          <li>• Riwayat hilang saat browser ditutup</li>
-                          <li>• Pastikan koneksi internet stabil</li>
-                        </ul>
-                      </div>
+                       <div>
+                         <h4 className="font-medium text-foreground mb-2">Cara Menggunakan Chat:</h4>
+                         <ul className="space-y-1 text-muted-foreground">
+                           <li>• Klik tombol "Chat dengan Admin" di detail barang</li>
+                           <li>• Anda akan diarahkan ke WhatsApp untuk chat dengan admin</li>
+                           <li>• Admin akan merespons segera mungkin</li>
+                         </ul>
+                       </div>
+                       <div>
+                         <h4 className="font-medium text-foreground mb-2">Catatan:</h4>
+                         <ul className="space-y-1 text-muted-foreground">
+                           <li>• Pastikan WhatsApp terinstall di perangkat Anda</li>
+                           <li>• Chat akan berlangsung di aplikasi WhatsApp</li>
+                           <li>• Hubungi admin untuk bantuan lebih lanjut</li>
+                         </ul>
+                       </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -163,19 +170,10 @@ const ChatPage = () => {
             )}
           </div>
         </div>
-      </main>
+       </main>
 
-      <Footer />
-
-      {/* Chat Modal */}
-      {selectedChat && (
-        <Chat
-          itemId={selectedChat.itemId}
-          itemTitle={selectedChat.itemTitle}
-          onClose={handleCloseChat}
-        />
-      )}
-    </div>
+       <Footer />
+     </div>
   );
 };
 
