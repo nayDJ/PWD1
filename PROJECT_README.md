@@ -1,7 +1,7 @@
 # Deskripsi Proyek Lost and Found
 
 ## 1. Deskripsi Singkat Proyek
-Proyek ini adalah aplikasi web untuk mengelola laporan barang hilang dan ditemukan. Aplikasi memungkinkan pengguna untuk melaporkan barang hilang, melaporkan barang ditemukan, melihat daftar barang, melihat detail barang, dan berkomunikasi dengan admin melalui fitur chat. Aplikasi ini juga dilengkapi dengan sistem autentikasi pengguna, peran pengguna (user/admin), dan dashboard admin untuk pengelolaan.
+Inisiatif ini merupakan platform digital yang bertujuan untuk menangani pelaporan objek yang hilang dan yang telah diketemukan. Platform ini memberikan kemampuan bagi pengguna untuk menyampaikan laporan objek hilang, menyampaikan temuan objek, meninjau katalog objek, memeriksa rincian objek, serta berinteraksi dengan administrator lewat fungsi pesan. Selain itu, platform ini menyertakan mekanisme verifikasi identitas pengguna, pembagian role (pengguna/admin), serta panel kontrol administrator untuk administrasi.
 
 ## 2. Skema Database
 Database menggunakan PostgreSQL melalui Supabase dengan skema berikut:
@@ -12,7 +12,7 @@ Database menggunakan PostgreSQL melalui Supabase dengan skema berikut:
 - `created_at` (TIMESTAMP WITH TIME ZONE, Default NOW())
 - `updated_at` (TIMESTAMP WITH TIME ZONE, Default NOW())
 
-Fungsi: Menyimpan profil pengguna dengan peran mereka.
+Tujuan: Menyimpan data profil pengguna beserta jabatan mereka.
 
 ### Tabel `items`
 - `id` (UUID, Default gen_random_uuid(), Primary Key)
@@ -30,7 +30,7 @@ Fungsi: Menyimpan profil pengguna dengan peran mereka.
 - `created_at` (TIMESTAMP WITH TIME ZONE, Default NOW())
 - `updated_at` (TIMESTAMP WITH TIME ZONE, Default NOW())
 
-Fungsi: Menyimpan data barang hilang/ditemukan.
+Tujuan: Menyimpan informasi objek yang hilang atau telah ditemukan.
 
 ### Tabel `messages`
 - `id` (UUID, Default gen_random_uuid(), Primary Key)
@@ -40,34 +40,34 @@ Fungsi: Menyimpan data barang hilang/ditemukan.
 - `text` (TEXT, NOT NULL)
 - `created_at` (TIMESTAMP WITH TIME ZONE, Default NOW())
 
-Fungsi: Menyimpan pesan chat antara user dan admin.
+Tujuan: Menyimpan komunikasi pesan antara pengguna dan administrator.
 
-Semua tabel menggunakan Row Level Security (RLS) untuk keamanan.
+Setiap tabel mengadopsi Row Level Security (RLS) guna memastikan perlindungan data.
 
 ## 3. Tech Stack
 ### Front End
-- **React 19**: Framework JavaScript untuk membangun UI interaktif. Dipilih karena ekosistemnya yang besar, komunitas aktif, dan kemampuan untuk membuat komponen reusable.
-- **TypeScript**: Superset JavaScript dengan tipe statis. Dipilih untuk meningkatkan keamanan kode, debugging yang lebih baik, dan pengalaman developer yang lebih baik.
-- **Vite**: Build tool modern yang cepat. Dipilih karena waktu build yang sangat cepat, hot module replacement (HMR), dan dukungan native untuk TypeScript dan React.
-- **TailwindCSS**: Utility-first CSS framework. Dipilih untuk styling yang cepat, responsif, dan konsisten tanpa perlu menulis CSS custom.
-- **Radix UI**: Komponen UI primitif yang dapat diakses. Dipilih untuk UI yang konsisten, dapat diakses, dan mudah dikustomisasi menggunakan shadcn/ui.
-- **React Router DOM**: Routing untuk aplikasi React. Dipilih untuk navigasi client-side yang efisien.
-- **TanStack Query (React Query)**: Library untuk state management server dan caching. Dipilih untuk mengelola data API dengan caching otomatis, error handling, dan optimis updates.
-- **React Hook Form**: Library untuk form management. Dipilih untuk performa tinggi dan integrasi mudah dengan validasi.
-- **Zod**: Schema validation library. Dipilih untuk validasi tipe-safe dan error handling yang baik.
-- **Lucide React**: Icon library. Dipilih untuk ikon yang konsisten dan scalable.
+- **React 19**: Kerangka kerja JavaScript yang digunakan untuk mengembangkan antarmuka pengguna yang responsif. Dipilih berdasarkan jaringan ekosistemnya yang luas, komunitas yang dinamis, serta kemampuan dalam menciptakan elemen yang dapat digunakan ulang.
+- **TypeScript**: Ekstensi JavaScript dengan sistem tipe tetap. Dipilih untuk memperkuat keamanan kode, memfasilitasi proses debugging, dan meningkatkan kualitas pengalaman pengembang.
+- **Vite**: Alat pembangunan modern dengan kecepatan tinggi. Dipilih dikarenakan proses kompilasi yang sangat singkat, fitur hot module replacement (HMR), serta dukungan asli untuk TypeScript dan React.
+- **TailwindCSS**: Kerangka kerja CSS yang berbasis utilitas. Dipilih untuk penataan gaya yang efisien, adaptif, dan seragam tanpa memerlukan penulisan CSS khusus.
+- **Radix UI**: Elemen UI dasar yang mendukung aksesibilitas. Dipilih untuk antarmuka yang stabil, terjangkau, dan mudah disesuaikan melalui shadcn/ui.
+- **React Router DOM**: Sistem routing untuk aplikasi React. Dipilih untuk navigasi sisi klien yang optimal.
+- **TanStack Query (React Query)**: Pustaka untuk pengelolaan status server dan penyimpanan sementara. Dipilih untuk menangani data API dengan caching otomatis, penanganan kesalahan, serta pembaruan optimis.
+- **React Hook Form**: Pustaka untuk pengelolaan formulir. Dipilih karena kinerja unggul dan integrasi sederhana dengan mekanisme validasi.
+- **Zod**: Pustaka validasi skema. Dipilih untuk validasi yang aman terhadap tipe dan penanganan kesalahan yang efektif.
+- **Lucide React**: Koleksi ikon. Dipilih untuk ikon yang seragam dan dapat diskalakan.
 
 ### Back End
-- **Supabase**: Backend-as-a-Service (BaaS) yang menyediakan database, autentikasi, storage, dan real-time features. Dipilih karena kemudahan setup, fitur lengkap (auth, database, file storage), real-time subscriptions, dan integrasi yang baik dengan React.
+- **Supabase**: Layanan Backend-as-a-Service (BaaS) yang menawarkan basis data, verifikasi identitas, penyimpanan, serta fitur real-time. Dipilih karena kemudahan konfigurasi, rangkaian fitur komprehensif (otentikasi, basis data, penyimpanan berkas), langganan real-time, serta kompatibilitas yang baik dengan React.
 
 ### Database
-- **PostgreSQL**: Relational database melalui Supabase. Dipilih karena keamanan tinggi, ACID compliance, dukungan JSON, dan kemampuan untuk query kompleks. Supabase menyediakan layer keamanan dengan Row Level Security (RLS).
+- **PostgreSQL**: Basis data relasional yang disediakan oleh Supabase. Dipilih karena tingkat keamanan yang tinggi, kepatuhan ACID, dukungan untuk JSON, serta kapasitas untuk kueri yang rumit. Supabase menambahkan lapisan perlindungan melalui Row Level Security (RLS).
 
-Alasan pemilihan tech stack secara keseluruhan: Kombinasi ini memungkinkan development yang cepat, scalable, dan maintainable. Supabase mengurangi kebutuhan backend custom, memungkinkan fokus pada front-end. React ecosystem menyediakan tools modern untuk UX yang baik.
+Dasar pemilihan tumpukan teknologi secara menyeluruh: Gabungan ini mendukung pengembangan yang cepat, dapat diperluas, dan mudah dipelihara. Supabase meminimalkan kebutuhan untuk backend khusus, sehingga memungkinkan konsentrasi pada bagian front-end. Ekosistem React menyajikan alat-alat mutakhir untuk pengalaman pengguna yang optimal.
 
 ## 4. Penerapan Konsep Web Dinamis
 ### Form Validation
-Form validation menggunakan validasi manual di client-side dengan JavaScript regex untuk email dan nomor telepon. Error ditampilkan secara real-time saat input berubah.
+Validasi formulir dilakukan melalui pemeriksaan manual di sisi klien menggunakan ekspresi reguler JavaScript untuk alamat surel dan nomor telepon. Kesalahan ditunjukkan secara langsung ketika masukan dimodifikasi.
 
 Potongan kode dari `src/components/ReportForm.tsx`:
 ```typescript
@@ -107,7 +107,7 @@ const validateForm = () => {
 ```
 
 ### Session Management
-Session dikelola menggunakan Supabase Auth, yang menggunakan JWT tokens yang disimpan dalam cookies/httpOnly secara otomatis. Session diperiksa pada setiap request ke API.
+Sesi dikontrol melalui Supabase Auth, yang memanfaatkan token JWT yang disimpan secara otomatis dalam cookies/httpOnly. Sesi diverifikasi pada setiap permintaan ke API.
 
 Potongan kode dari `src/hooks/useSupabase.ts`:
 ```typescript
@@ -137,10 +137,10 @@ export const useAuth = () => {
 ```
 
 ### Cookies
-Cookies ditangani otomatis oleh Supabase untuk menyimpan session tokens. Tidak ada manipulasi manual cookies dalam kode aplikasi.
+Cookies dikelola secara otomatis oleh Supabase untuk menyimpan token sesi. Tidak terdapat pengaturan manual terhadap cookies dalam kode program.
 
 ### API (Web Service)
-API calls menggunakan Supabase client yang terintegrasi dengan TanStack Query untuk caching, error handling, dan optimistic updates. Data di-fetch secara real-time.
+Panggilan API memanfaatkan klien Supabase yang terhubung dengan TanStack Query untuk penyimpanan sementara, penanganan kesalahan, serta pembaruan optimis. Data diambil dalam waktu nyata.
 
 Potongan kode dari `src/hooks/useSupabase.ts`:
 ```typescript
